@@ -49,12 +49,6 @@ wallets = [
 ]
 ```
 
-3. **Block Numbers** (optional): Modify the block range if needed:
-```python
-start_block = 21571557
-end_block = 22653042
-```
-
 ### Usage
 
 Run the script using Python:
