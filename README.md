@@ -16,10 +16,17 @@ A Python script that allows you to check ERC-20 token balances for multiple wall
 
 - Python 3.7 or higher
 - `web3.py` library
+- Git (for cloning the repository)
 
 ### Installation
 
-1. Install the required dependency:
+1. Clone the repository:
+```bash
+git clone https://github.com/jacobabiola/TokenBalanceChecker.git
+cd TokenBalanceChecker
+```
+
+2. Install the required dependency:
 ```bash
 pip install web3
 ```
