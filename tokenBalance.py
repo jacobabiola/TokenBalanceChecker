@@ -27,37 +27,37 @@ abi = [
 # Create contract instance
 token_contract = web3.eth.contract(address=token_address, abi=abi)
 
-# Define the block range (replace with your block numbers)
-start_block = 21571557  # Example: starting block on Pulsechain
-end_block = 22653042    # Example: ending block on Pulsechain
-
 # List of wallet addresses (update with your wallets)
 wallets = [
     "0x6D5FC6Ac6e753f68d4F64cc7b605D925Cf642D5e",
     "0xcCC5EEeFbcaD36A29c52Aa73DC1c90DE2AC53bE3",
     "0x04599096e590634f2c33C42D2eDfD15Dd73e043f",
     "0x3fefd06828689252A69207718985B9a78350561F",
+    "0x4695ea9D27b98256999ACba2f165bd1E9610bBa9",
+    "0xaA3D951A416c807759d66a364748aa590F68B247",
+    "0xeAd9AEc78f52aD06B1752f719C106Be10Ec8489B",
+    "0x963588d57BfaFeA746dA0D0c71599c4Eb7DB70b2",
+    "0x614f16CAf6717400597007B87A7ce1776D7984c1",
+   
+
+
     # Add more wallets as needed
 ]
 
 # --- Processing and CSV Export ---
 results = []
-total_start = 0
 total_end = 0
 
 for wallet in wallets:
     try:
         wallet_checksum = web3.to_checksum_address(wallet)
-        # Fetch balances at specified blocks using block_identifier
-        start_balance = token_contract.functions.balanceOf(wallet_checksum).call(block_identifier=start_block)
-        end_balance = token_contract.functions.balanceOf(wallet_checksum).call(block_identifier=end_block)
-       
-
-        results.append((wallet, end_balance ))
-        total_start += start_balance
+        # Fetch current balance
+        end_balance = token_contract.functions.balanceOf(wallet_checksum).call()
+        
+        results.append((wallet, end_balance))
         total_end += end_balance
 
-        print(f"Wallet {wallet}:  End={end_balance}")
+        print(f"Wallet {wallet}:  Balance={end_balance}")
     except Exception as e:
         print(f"Error processing wallet {wallet}: {e}")
 
@@ -76,3 +76,4 @@ with open(csv_filename, "w", newline="") as csvfile:
     csvwriter.writerow(["TOTAL", total_end])
 
 print(f"CSV file exported as {csv_filename}")
+
