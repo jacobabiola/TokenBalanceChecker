@@ -21,11 +21,28 @@ abi = [
         "name": "balanceOf",
         "outputs": [{"name": "balance", "type": "uint256"}],
         "type": "function",
+    },
+    {
+        "constant": True,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [{"name": "", "type": "uint8"}],
+        "type": "function",
     }
 ]
 
 # Create contract instance
 token_contract = web3.eth.contract(address=token_address, abi=abi)
+
+# Get token decimals
+try:
+    DECIMALS = token_contract.functions.decimals().call()
+except Exception as e:
+    DECIMALS = 18  # Default to 18 if decimals() call fails
+
+def format_balance(balance):
+    """Convert raw balance to human readable format"""
+    return "{:,.4f}".format(balance / (10 ** DECIMALS))
 
 # List of wallet addresses (update with your wallets)
 wallets = [
@@ -54,10 +71,11 @@ for wallet in wallets:
         # Fetch current balance
         end_balance = token_contract.functions.balanceOf(wallet_checksum).call()
         
-        results.append((wallet, end_balance))
+        formatted_balance = format_balance(end_balance)
+        results.append((wallet, formatted_balance))
         total_end += end_balance
 
-        print(f"Wallet {wallet}:  Balance={end_balance}")
+        print(f"Wallet {wallet}:  Balance={formatted_balance}")
     except Exception as e:
         print(f"Error processing wallet {wallet}: {e}")
 
@@ -73,7 +91,6 @@ with open(csv_filename, "w", newline="") as csvfile:
     for row in results:
         csvwriter.writerow(row)
     # Write totals row
-    csvwriter.writerow(["TOTAL", total_end])
+    csvwriter.writerow(["TOTAL", format_balance(total_end)])
 
 print(f"CSV file exported as {csv_filename}")
-
